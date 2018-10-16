@@ -18,6 +18,7 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
+from sets import Set
 
 class SearchProblem:
     """
@@ -86,17 +87,96 @@ def depthFirstSearch(problem):
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from game import Directions
+    s = Directions.SOUTH
+    w = Directions.WEST
+    e = Directions.EAST 
+    n = Directions.NORTH
+
+    closed = Set()  # we use a set to keep track of the visited nodes
+    paths = {} # Dict with state as key and path to state as value
+    fringe = util.Stack() # we use a stack to simulate a dfs
+    start = problem.getStartState()
+    fringe.push(start)
+    paths[start] = []
+    while True:
+        if fringe.isEmpty():
+            return []
+        node = fringe.pop() # current node
+        if problem.isGoalState(node) :
+            return paths[node]
+        if node not in closed :
+            closed.add(node)
+            neighbors = problem.getSuccessors(node)
+            #returns type (state,action,stepcost)
+            for i in neighbors:
+                # add the direction to the path already constructed for the parent
+                paths[i[0]] = paths[node] + [i[1]]
+                # add the state to the qeueu
+                fringe.push(i[0])
+    
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
+    from game import Directions
+    s = Directions.SOUTH
+    w = Directions.WEST
+    e = Directions.EAST 
+    n = Directions.NORTH
+
+    closed = Set()  # we use a set to keep track of the visited nodes
+    paths = {} # Dict with state as key and path to state as value
+    fringe = util.Queue() # we use a qeueu to simulate a bfs
+    start = problem.getStartState()
+    fringe.push(start)
+    paths[start] = []
+    while True:
+        if fringe.isEmpty():
+            return []
+        node = fringe.pop() # current node
+        if problem.isGoalState(node) :
+            return paths[node]
+        if node not in closed :
+            closed.add(node)
+            neighbors = problem.getSuccessors(node)
+            #returns type (state,action,stepcost)
+            for i in neighbors:
+                # add the direction to the path already constructed for the parent
+                paths[i[0]] = paths[node] + [i[1]]
+                # add the state to the qeueu
+                fringe.push(i[0])
+
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
+    from game import Directions
+    s = Directions.SOUTH
+    w = Directions.WEST
+    e = Directions.EAST 
+    n = Directions.NORTH
+
+    closed = Set()  # we use a set to keep track of the visited nodes
+    paths = {} # Dict with state as key and path to state as value
+    fringe = util.PriorityQueue() # we use a qeueu to simulate a bfs
+    start = problem.getStartState()
+    fringe.push(start,0)
+    paths[start] = []
+    while True:
+        if fringe.isEmpty():
+            return []
+        node = fringe.pop() # current node
+        if problem.isGoalState(node) :
+            return paths[node]
+        if node not in closed :
+            closed.add(node)
+            neighbors = problem.getSuccessors(node)
+            #returns type (state,action,stepcost)
+            for i in neighbors:
+                # add the direction to the path already constructed for the parent
+                paths[i[0]] = paths[node] + [i[1]]
+                # add the state to the qeueu with the cost 
+                fringe.push(i[0],i[2])
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
