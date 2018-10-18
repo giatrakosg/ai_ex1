@@ -189,49 +189,6 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-
-
-    from game import Directions
-    s = Directions.SOUTH
-    w = Directions.WEST
-    e = Directions.EAST 
-    n = Directions.NORTH
-
-    closed = Set()  # we use a set to keep track of the visited nodes
-    paths = {} # Dict with state as key and path to state as value
-    fringe = util.PriorityQueue() # we use a qeueu to simulate a bfs
-    start = problem.getStartState()
-    fringe.push(start,0)
-    paths[start] = []
-    while True:
-        if fringe.isEmpty():
-            return []
-        node = fringe.pop() # current node
-        if problem.isGoalState(node) :
-            return paths[node]
-        if node not in closed :
-            closed.add(node)
-            neighbors = problem.getSuccessors(node)
-            #returns type (state,action,stepcost)
-            for i in neighbors:
-                # add the direction to the path already constructed for the parent
-                paths[i[0]] = paths[node] + [i[1]]
-                # add the state to the qeueu with the cost 
-                fringe.push(i[0],i[2] + heuristic(i))
-    util.raiseNotDefined()
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Abbreviations
 bfs = breadthFirstSearch
 dfs = depthFirstSearch
