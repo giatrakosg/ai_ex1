@@ -217,19 +217,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                 # add the direction to the path already constructed for the parent
                 paths[i[0]] = paths[node] + [i[1]]
                 # add the state to the qeueu with the cost 
-                fringe.push(i[0],i[2] + heuristic(i))
+                fringe.push(i[0],i[2] + heuristic(i[0],problem))
     util.raiseNotDefined()
-
-
-
-
-
-
-
-
-
-
-
 
 
 # Abbreviations

@@ -287,21 +287,26 @@ class CornersProblem(search.SearchProblem):
         self._expanded = 0 # DO NOT CHANGE; Number of search nodes expanded
         # Please add any code here which you would like to use
         # in initializing the problem
-        "*** YOUR CODE HERE ***"
+
 
     def getStartState(self):
         """
         Returns the start state (in your state space, not the full Pacman state
         space)
         """
-        "*** YOUR CODE HERE ***"
+        # State is a tuple of position of pacman and corners visited.
+        cornersVisited = (0,0,0,0)
+        state = (self.startingPosition,cornersVisited)
+        return state
         util.raiseNotDefined()
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
-        "*** YOUR CODE HERE ***"
+        if state[1] == (1,1,1,1):
+            return True
+        return False
         util.raiseNotDefined()
 
     def getSuccessors(self, state):
@@ -314,17 +319,27 @@ class CornersProblem(search.SearchProblem):
             state, 'action' is the action required to get there, and 'stepCost'
             is the incremental cost of expanding to that successor
         """
-
+        currentPosition = state[0]
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
-            #   x,y = currentPosition
-            #   dx, dy = Actions.directionToVector(action)
-            #   nextx, nexty = int(x + dx), int(y + dy)
-            #   hitsWall = self.walls[nextx][nexty]
+            x = currentPosition[0]
+            y = currentPosition[1]
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            corners = state[1]
+            if hitsWall is True:
+                continue
+            newState = (nextx,nexty)
+            if newState in self.corners:
+                k = self.corners.index(newState)
+                lCorners = list(corners)
+                lCorners[k] = 1
+                corners = tuple(lCorners)
+            successors.append(((newState,corners),action,1))
 
-            "*** YOUR CODE HERE ***"
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
