@@ -117,7 +117,7 @@ def depthFirstSearch(problem):
     
 
 def breadthFirstSearch(problem):
-    """Search the shallowest nodes in the search tree first."""
+
     from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
@@ -126,7 +126,7 @@ def breadthFirstSearch(problem):
 
     closed = Set()  # we use a set to keep track of the visited nodes
     paths = {} # Dict with state as key and path to state as value
-    fringe = util.Queue() # we use a qeueu to simulate a bfs
+    fringe = util.Queue() # we use a stack to simulate a dfs
     start = problem.getStartState()
     fringe.push(start)
     paths[start] = []
@@ -141,15 +141,14 @@ def breadthFirstSearch(problem):
             neighbors = problem.getSuccessors(node)
             #returns type (state,action,stepcost)
             for i in neighbors:
-                # add the direction to the path already constructed for the parent
-                paths[i[0]] = paths[node] + [i[1]]
-                # add the state to the qeueu
-                fringe.push(i[0])
-
+                if i[0] not in fringe.list :
+                    if i[0] not in closed:
+                        fringe.push(i[0])
+                        paths[i[0]] = paths[node] + [i[1]]
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
-    """Search the node of least total cost first."""
+
     from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
@@ -158,25 +157,37 @@ def uniformCostSearch(problem):
 
     closed = Set()  # we use a set to keep track of the visited nodes
     paths = {} # Dict with state as key and path to state as value
-    fringe = util.PriorityQueue() # we use a qeueu to simulate a bfs
+    fringe = util.PriorityQueue() # we use a stack to simulate a dfs
     start = problem.getStartState()
     fringe.push(start,0)
-    paths[start] = []
+    paths[start] = ([],0)
+
     while True:
         if fringe.isEmpty():
             return []
         node = fringe.pop() # current node
         if problem.isGoalState(node) :
-            return paths[node]
+            return paths[node][0]
         if node not in closed :
             closed.add(node)
             neighbors = problem.getSuccessors(node)
             #returns type (state,action,stepcost)
             for i in neighbors:
-                # add the direction to the path already constructed for the parent
-                paths[i[0]] = paths[node] + [i[1]]
-                # add the state to the qeueu with the cost 
-                fringe.push(i[0],i[2])
+                if i[0] not in closed:
+                    #if i[0] not in paths:
+                    cost2node = paths[node][1]
+                    cost2i = cost2node + i[2]
+                    path2i = paths[node][0] + [i[1]]
+                    if i[0] in paths:
+                        if paths[i[0]][1] > cost2i :
+                            paths[i[0]] = (path2i,cost2i)
+                            fringe.update(i[0],cost2i)
+                        else:
+                            continue
+                    else:
+                        paths[i[0]] = (path2i,cost2i)
+                        fringe.push(i[0],cost2i)
+
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
